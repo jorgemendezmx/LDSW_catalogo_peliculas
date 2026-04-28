@@ -36,78 +36,51 @@ class MyHomePage extends StatelessWidget {
         title: Text(title),
       ),
       
-      body: Center(
+      body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-
-            // Widget Fila de íconos
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    print('Elegiste comedia');
-                  },
-                  child: Text('Comedia'),
-                ),
-                SizedBox(width: 10),
-                ElevatedButton(
-                  onPressed: () {
-                    print('Elegiste acción');
-                  },
-                  child: Text('Acción'),
-                ),
-                SizedBox(width: 10),
-                ElevatedButton(
-                  onPressed: () {
-                    print('Elegiste suspenso');
-                  },
-                  child: Text('Suspenso'),
-                ),
-                SizedBox(width: 10),
-                Icon(Icons.find_in_page, size: 30, color: Colors.blueGrey),
-                SizedBox(width: 10),
-              ],
-            ),
+            
+            // Inserta el Widget de Header con imagen de fondo
+            HeaderSection(),        
 
             const SizedBox(height: 40),
 
-              // Texto de bienvenida
+            // Texto de bienvenida
             Text('¡Encuentra aquí las mejores películas!', 
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
 
-            const SizedBox(height: 40),
-
-              // Widget de contenedor para Película destacada
-            Container(
-              padding: const EdgeInsets.all(50.0),
-              width: 300,
-              color: Colors.blueGrey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                Icon(Icons.movie, size: 50, color: Colors.white70),
-                SizedBox(width: 20),
-                Text('Película destacada de la semana: "El Padrino"'),
-              ],), 
+            Text('Hello World', 
+            style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
             ),
 
             const SizedBox(height: 40),
 
-              // Widget de Stack para mostrar imagen de otras películas
+            // Construye renglón de Películas destacadas a partir de Widget PrincipalMovie
+            Row(              
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                PrincipalMovie(moviename: 'El silencio de los corderos'),
+                PrincipalMovie(moviename: 'Dogville'),
+                PrincipalMovie(moviename: 'Sentencia previa'),
+              ],  
+            ),
+
+            const SizedBox(height: 40),
+
+            // Widget de Stack para mostrar imagen de otras películas
             Stack(
               children: [
                 Container(
                   width: 150,
                   height: 150,
-                  color: Colors.orange,
+                  color: Colors.black87,
                 ),
                 Positioned(
                   bottom: 10,
                   right: 10,
-                  child: Text('Drama', style: TextStyle(color: const Color.fromARGB(255, 117, 13, 100), fontWeight: FontWeight.bold)),
+                  child: Text('Drama', style: TextStyle(color: Colors.blueAccent, fontSize: 15, fontWeight: FontWeight.bold)),
                 ),
               ],
             ),
@@ -117,3 +90,92 @@ class MyHomePage extends StatelessWidget {
     );
   }
 }
+
+// Widget Header con imagen de fondo y botones de categoría
+class HeaderSection extends StatelessWidget {
+  const HeaderSection({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage("images/septimoarte.jpg"),
+          fit: BoxFit.cover,
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(48.0),
+        child: Row(  // Widget Fila de íconos
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                print('Elegiste comedia');
+              },
+              child: Text('Comedia'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                print('Elegiste acción');
+              },
+              child: Text('Acción'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                print('Elegiste suspenso');
+              },
+              child: Text('Suspenso'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                print('Elegiste buscar');
+              },
+              child: Icon(Icons.find_in_page, size: 25, color: Colors.blueGrey),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+//Widget Película Destacada
+class PrincipalMovie extends StatelessWidget {
+  const PrincipalMovie ({super.key, required this.moviename});
+
+  final String moviename;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 200,
+      height: 200,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: Colors.blue, // Color del borde
+          width: 2.0,         // Grosor del borde
+        ),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.movie_outlined, size: 50, color: Colors.indigo),
+          Padding(
+            padding: const EdgeInsets.all(48.0),
+            child: Text(moviename, 
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w400,
+                color: Colors.indigo,
+              ),),
+          ),
+        ],
+      ),
+    ); 
+  }
+}
+
+
