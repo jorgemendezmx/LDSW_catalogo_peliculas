@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 void main() {
   runApp(const MyApp());
@@ -21,26 +23,60 @@ class MyApp extends StatelessWidget {
   } 
 }
 
-// Página de inicio de la aplicación.
-class MyHomePage extends StatelessWidget {
+// Página de inicio de la aplicación; cambió a StatefulWidget para manejar el estado de los datos obtenidos de la API.
+class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
 
   final String title;
 
   @override
-  Widget build(BuildContext context) {
+  State<MyHomePage> createState() => _MyHomePageState();
+  
+}
 
+// Estado de la página de inicio, donde se manejan los datos obtenidos de la API y se construye la interfaz de usuario.
+class _MyHomePageState extends State<MyHomePage> {
+  String pkName = '';
+  String pkImage = '';
+  int pkWeight = 0;
+
+  Future<void> fetchAPI() async {
+
+    final url = Uri.parse('https://pokeapi.co/api/v2/pokemon/charizard');
+    final response = await http.get(url);
+    
+    if (response.statusCode == 200) {
+      print('API cargada correctamente');
+      final data = jsonDecode(response.body);
+      setState(() {
+        pkName = data['name'];
+        pkWeight = data['weight'];
+        pkImage = data['sprites']['front_default'];
+      });
+
+    } else {
+      print('Error al cargar API');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchAPI();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(title),
+        title: Text(widget.title),
       ),
-      
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            
+          children: <Widget>[
+
             // Inserta el Widget de Header con imagen de fondo
             HeaderSection(),        
 
@@ -65,6 +101,29 @@ class MyHomePage extends StatelessWidget {
                 PrincipalMovie(moviename: 'Dogville'),
                 PrincipalMovie(moviename: 'Sentencia previa'),
               ],  
+            ),
+
+            const SizedBox(height: 40),
+
+            // Muestra en pantalla los datos obtenidos de la API
+            Text('Resultado de la conexión a la API de Pokémon', 
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+
+            Text(
+              'Pokemon: $pkName',
+              style: TextStyle(fontSize: 22),
+            ),
+
+            Text(
+              'Peso: $pkWeight',
+              style: TextStyle(fontSize: 18),
+            ),
+
+            Image.network(
+              pkImage,
+              scale: 0.5,
+              width: 100,
             ),
 
             const SizedBox(height: 40),
