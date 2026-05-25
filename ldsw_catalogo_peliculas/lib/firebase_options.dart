@@ -73,4 +73,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'peliculas-flutter-2026.firebasestorage.app',
     measurementId: 'G-QWM8SXRWGB',
   );
+
 }

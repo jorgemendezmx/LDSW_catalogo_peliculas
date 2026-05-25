@@ -1,8 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+//import 'package:http/http.dart' as http;
 import 'package:firebase_core/firebase_core.dart';
+//import 'package:cloud_firestore/cloud_firestore.dart';
 import 'firebase_options.dart';
-import 'dart:convert';
+//import 'dart:convert';
+//import 'screens/movies/movie_random.dart';
+//import 'screens/movies/movie_list_screen.dart';
+
+//import 'package:firebase_core/firebase_core.dart';
+//import 'firebase_options.dart';
+
+import 'screens/auth/auth_gate.dart';
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,198 +35,24 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 68, 183, 58)),
       ),
-      home: const MyHomePage(title: 'Catálogo de Películas'),
+      home: const AuthGate(),
     );
   } 
 }
 
-// Página de inicio de la aplicación; cambió a StatefulWidget para manejar el estado de los datos obtenidos de la API.
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
   
-}
 
-// Estado de la página de inicio, donde se manejan los datos obtenidos de la API y se construye la interfaz de usuario.
-class _MyHomePageState extends State<MyHomePage> {
-  String pkName = '';
-  String pkImage = '';
-  int pkWeight = 0;
-
-  Future<void> fetchAPI() async {
-
-    final url = Uri.parse('https://pokeapi.co/api/v2/pokemon/charizard');
-    final response = await http.get(url);
-    
-    if (response.statusCode == 200) {
-      print('API cargada correctamente');
-      final data = jsonDecode(response.body);
-      setState(() {
-        pkName = data['name'];
-        pkWeight = data['weight'];
-        pkImage = data['sprites']['front_default'];
-      });
-
-    } else {
-      print('Error al cargar API');
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    fetchAPI();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-
-            // Inserta el Widget de Header con imagen de fondo
-            HeaderSection(),        
-
-            const SizedBox(height: 40),
-
-            // Texto de bienvenida
-            Text('¡Encuentra aquí las mejores películas!', 
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-
-            Text('Hello World', 
-            style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
-            ),
-
-            const SizedBox(height: 40),
-
-            // Construye renglón de Películas destacadas a partir de Widget PrincipalMovie
-            Row(              
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                PrincipalMovie(moviename: 'El silencio de los corderos'),
-                PrincipalMovie(moviename: 'Dogville'),
-                PrincipalMovie(moviename: 'Sentencia previa'),
-              ],  
-            ),
-
-            const SizedBox(height: 40),
-
-            // Muestra en pantalla los datos obtenidos de la API
-            Text('Resultado de la conexión a la API de Pokémon', 
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-
-            Text(
-              'Pokemon: $pkName',
-              style: TextStyle(fontSize: 22),
-            ),
-
-            Text(
-              'Peso: $pkWeight',
-              style: TextStyle(fontSize: 18),
-            ),
-
-            Image.network(
-              pkImage,
-              scale: 0.5,
-              width: 100,
-            ),
-
-            const SizedBox(height: 40),
-
-            // Widget de Stack para mostrar imagen de otras películas
-            Stack(
-              children: [
-                Container(
-                  width: 150,
-                  height: 150,
-                  color: Colors.black87,
-                ),
-                Positioned(
-                  bottom: 10,
-                  right: 10,
-                  child: Text('Drama', style: TextStyle(color: Colors.blueAccent, fontSize: 15, fontWeight: FontWeight.bold)),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// Widget Header con imagen de fondo y botones de categoría
-class HeaderSection extends StatelessWidget {
-  const HeaderSection({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage("images/septimoarte.jpg"),
-          fit: BoxFit.cover,
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(48.0),
-        child: Row(  // Widget Fila de íconos
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            ElevatedButton(
-              onPressed: () {
-                print('Elegiste comedia');
-              },
-              child: Text('Comedia'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                print('Elegiste acción');
-              },
-              child: Text('Acción'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                print('Elegiste suspenso');
-              },
-              child: Text('Suspenso'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                print('Elegiste buscar');
-              },
-              child: Icon(Icons.find_in_page, size: 25, color: Colors.blueGrey),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-//Widget Película Destacada
-class PrincipalMovie extends StatelessWidget {
-  const PrincipalMovie ({super.key, required this.moviename});
+//Widget constructor de Tarjeta simple de una Película
+class MovieCard extends StatelessWidget {
+  const MovieCard ({super.key, required this.moviename});
 
   final String moviename;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 200,
-      height: 200,
+      width: 100,
+      height: 100,
       alignment: Alignment.center,
       decoration: BoxDecoration(
         border: Border.all(
@@ -229,13 +64,13 @@ class PrincipalMovie extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.movie_outlined, size: 50, color: Colors.indigo),
+          Icon(Icons.movie_outlined, size: 35, color: Colors.indigo),
           Padding(
-            padding: const EdgeInsets.all(48.0),
+            padding: const EdgeInsets.all(10.0),
             child: Text(moviename, 
               style: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w400,
+                fontSize: 8,
+                fontWeight: FontWeight.normal,
                 color: Colors.indigo,
               ),),
           ),
